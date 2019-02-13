@@ -11,6 +11,8 @@ router.post('/register', async(req, res) => {
 
         const user = await User.create(req.body);
 
+        user.password = undefined;
+
         return res.send({ user });
 
     } catch (err) {
