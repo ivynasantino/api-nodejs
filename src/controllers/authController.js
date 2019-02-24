@@ -1,6 +1,11 @@
 const express = require('express');
 const bcripty = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+const authConfig = require('../config/auth');
+
 const User = require('../models/user');
+
 const router = express.Router();
 
 router.post('/register', async(req, res) => {
@@ -14,7 +19,11 @@ router.post('/register', async(req, res) => {
 
         user.password = undefined; 
 
-        return res.send({ user });
+        const token = jwt.sign({ id: user.id }, authConfig.secret, {
+            expiresIn: 86400,         
+        });
+
+        return res.send({ user, token });
 
     } catch (err) {
         return res.status(400).send( { error: 'Registration failed' });
